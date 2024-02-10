@@ -32,13 +32,17 @@ func handleRequest(conn net.Conn) {
 	defer conn.Close()
 	requestLine, _ := reader.ReadString('\n')
 	fmt.Println(requestLine)
-
 	lines := strings.Fields(requestLine)
-
 	path := lines[1]
+
 	var res string
 	if path == "/" {
 		res = "HTTP/1.1 200 OK\r\n\r\n"
+	} else if strings.HasPrefix(path, "/echo") {
+		dynamicString := strings.TrimPrefix(path, "/echo/")
+		// log.Println("Dynamic string: ", dynamicString)
+		// 1
+		res = fmt.Sprintf("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: %d\r\n\r\n%s", len(dynamicString), dynamicString)
 	} else {
 		res = "HTTP/1.1 404 Not Found\r\n\r\n"
 	}
